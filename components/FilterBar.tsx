@@ -42,7 +42,7 @@ const BHK_TYPES = [
     { id: 'BHK1', label: '1 BHK', short: '1B' },
     { id: 'BHK2', label: '2 BHK', short: '2B' },
     { id: 'BHK3', label: '3 BHK', short: '3B' },
-    { id: 'BHK4', label: '4 BHK+', short: '4B+' },
+    { id: 'BHK4PLUS', label: '4 BHK+', short: '4B+' },
 ];
 
 const FURNISHING_TYPES = [
@@ -103,9 +103,9 @@ export function FilterBar({ filters, setFilters, availableBuildingTypes, sortBy,
 
     const resetFilters = () => {
         setFilters({
-            rentMin: 5000,
-            rentMax: 50000,
-            type: ['BHK2'],
+            rentMin: 0,
+            rentMax: 200000,
+            type: [],
             furnishing: [],
             propertySizeMin: 0,
             balconies: null,
@@ -118,6 +118,7 @@ export function FilterBar({ filters, setFilters, availableBuildingTypes, sortBy,
     };
 
     const activeFiltersCount =
+        filters.type.length +
         filters.furnishing.length +
         filters.buildingType.length +
         filters.amenities.length +
@@ -159,26 +160,26 @@ export function FilterBar({ filters, setFilters, availableBuildingTypes, sortBy,
                             <input
                                 type="range"
                                 min="0"
-                                max="50000"
+                                max="100000"
                                 step="5000"
                                 value={filters.rentMin}
                                 onChange={(e) => setFilters(prev => ({ ...prev, rentMin: parseInt(e.target.value) }))}
                                 className="w-16 h-1.5 accent-rose-600 cursor-pointer"
                             />
-                            <span className="text-xs font-bold text-slate-600 w-8">{filters.rentMin / 1000}k</span>
+                            <span className="text-xs font-bold text-slate-600 w-10 truncate">{filters.rentMin >= 1000 ? `${filters.rentMin / 1000}k` : '0'}</span>
                         </div>
                         <span className="text-slate-200">|</span>
                         <div className="flex items-center gap-2">
                             <input
                                 type="range"
                                 min="10000"
-                                max="100000"
-                                step="5000"
+                                max="500000"
+                                step="10000"
                                 value={filters.rentMax}
                                 onChange={(e) => setFilters(prev => ({ ...prev, rentMax: parseInt(e.target.value) }))}
                                 className="w-16 h-1.5 accent-rose-600 cursor-pointer"
                             />
-                            <span className="text-xs font-bold text-slate-600 w-10">{filters.rentMax / 1000}k</span>
+                            <span className="text-xs font-bold text-slate-600 w-10 truncate">{filters.rentMax >= 100000 ? `${filters.rentMax / 100000}L` : `${filters.rentMax / 1000}k`}</span>
                         </div>
                     </div>
 
@@ -259,7 +260,7 @@ export function FilterBar({ filters, setFilters, availableBuildingTypes, sortBy,
                         )}
                     >
                         <Sparkles className={cn("w-3.5 h-3.5", filters.withImagesOnly ? "text-rose-500 fill-current" : "text-slate-400")} />
-                        Images Only
+                        3+ Images
                     </button>
 
                     <button
@@ -432,7 +433,7 @@ export function FilterBar({ filters, setFilters, availableBuildingTypes, sortBy,
                                     </div>
                                     <input
                                         type="range"
-                                        min="0" max="50000" step="5000"
+                                        min="0" max="100000" step="5000"
                                         value={filters.rentMin}
                                         onChange={(e) => setFilters(prev => ({ ...prev, rentMin: parseInt(e.target.value) }))}
                                         className="w-full h-2 accent-rose-600 bg-slate-100 rounded-lg appearance-none cursor-pointer"
@@ -444,7 +445,7 @@ export function FilterBar({ filters, setFilters, availableBuildingTypes, sortBy,
                                     </div>
                                     <input
                                         type="range"
-                                        min="10000" max="100000" step="5000"
+                                        min="10000" max="500000" step="10000"
                                         value={filters.rentMax}
                                         onChange={(e) => setFilters(prev => ({ ...prev, rentMax: parseInt(e.target.value) }))}
                                         className="w-full h-2 accent-rose-600 bg-slate-100 rounded-lg appearance-none cursor-pointer"
@@ -484,8 +485,8 @@ export function FilterBar({ filters, setFilters, availableBuildingTypes, sortBy,
                                     <Sparkles className={cn("w-5 h-5", filters.withImagesOnly ? "text-rose-500 fill-current" : "text-slate-300")} />
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-sm font-black text-slate-700">Images Only</span>
-                                    <span className="text-[10px] font-bold text-slate-400">Show only verified photos</span>
+                                    <span className="text-sm font-black text-slate-700">3+ Images Only</span>
+                                    <span className="text-[10px] font-bold text-slate-400">Show only highly verified (3+ images)</span>
                                 </div>
                             </div>
                             <button

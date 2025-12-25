@@ -25,7 +25,7 @@ export default function WishlistPage() {
     const [sortBy, setSortBy] = useState<string>('rent_asc');
     const [filters, setFilters] = useState({
         rentMin: 0,
-        rentMax: 500000,
+        rentMax: 200000,
         type: [] as string[],
         furnishing: [] as string[],
         propertySizeMin: 0,
@@ -74,13 +74,9 @@ export default function WishlistPage() {
             filtered = filtered.filter(prop => (prop.bathroom || 0) >= filters.bathrooms!);
         }
 
-        // Filter by only with images
+        // Filter by only with images (high quality: at least 3 images)
         if (filters.withImagesOnly) {
-            filtered = filtered.filter(prop => {
-                const hasPhotos = prop.photos && prop.photos.length > 0;
-                const hasOriginalImage = prop.originalImageUrl && prop.originalImageUrl.length > 0;
-                return hasPhotos || hasOriginalImage;
-            });
+            filtered = filtered.filter(prop => (prop.photos?.length || 0) > 2);
         }
 
         // Filter by building type
@@ -90,11 +86,11 @@ export default function WishlistPage() {
             );
         }
 
-        // Filter by amenities
+        // Filter by amenities (must have ANY of the selected amenities)
         if (filters.amenities.length > 0) {
             filtered = filtered.filter(prop => {
                 if (!prop.amenitiesMap) return false;
-                return filters.amenities.every(amenity => prop.amenitiesMap![amenity] === true);
+                return filters.amenities.some(amenity => prop.amenitiesMap![amenity] === true);
             });
         }
 
@@ -147,7 +143,7 @@ export default function WishlistPage() {
                     </Link>
                     <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-gradient-to-br from-rose-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold shadow-lg">NB</div>
-                        <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-purple-600">
+                        <span className="text-lg font-bold text-rose-600">
                             NoBroker<span className="font-light text-slate-800">++</span>
                         </span>
                     </div>

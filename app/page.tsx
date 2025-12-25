@@ -72,9 +72,9 @@ export default function Home() {
     // State
     const [sortBy, setSortBy] = useState<string>('rent_asc');
     const [filters, setFilters] = useState({
-        rentMin: 5000,
+        rentMin: 10000,
         rentMax: 50000,
-        type: ['BHK2'],
+        type: [] as string[],
         furnishing: [] as string[],
         propertySizeMin: 0,
         balconies: null as number | null,
@@ -92,7 +92,7 @@ export default function Home() {
                 const params = new URLSearchParams({
                     locations: JSON.stringify(selectedCluster.locations),
                     radius: '2.0',
-                    type: filters.type.length > 0 ? filters.type.join(',') : 'BHK2,BHK1',
+                    type: filters.type.length > 0 ? filters.type.join(',') : 'BHK1,BHK2,BHK3,BHK4PLUS',
                     furnishing: filters.furnishing.length > 0 ? filters.furnishing.join(',') : ''
                 });
 
@@ -156,13 +156,9 @@ export default function Home() {
             filtered = filtered.filter(prop => (prop.bathroom || 0) >= filters.bathrooms!);
         }
 
-        // Filter by only with images
+        // Filter by only with images (high quality: at least 3 images)
         if (filters.withImagesOnly) {
-            filtered = filtered.filter(prop => {
-                const hasPhotos = prop.photos && prop.photos.length > 0;
-                const hasOriginalImage = prop.originalImageUrl && prop.originalImageUrl.length > 0;
-                return hasPhotos || hasOriginalImage;
-            });
+            filtered = filtered.filter(prop => (prop.photos?.length || 0) > 2);
         }
 
         // Filter by building type
@@ -172,11 +168,11 @@ export default function Home() {
             );
         }
 
-        // Filter by amenities (must have ALL selected amenities)
+        // Filter by amenities (must have ANY of the selected amenities)
         if (filters.amenities.length > 0) {
             filtered = filtered.filter(prop => {
                 if (!prop.amenitiesMap) return false;
-                return filters.amenities.every(amenity => prop.amenitiesMap![amenity] === true);
+                return filters.amenities.some(amenity => prop.amenitiesMap![amenity] === true);
             });
         }
 
@@ -245,8 +241,8 @@ export default function Home() {
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <div className="w-8 h-8 bg-gradient-to-br from-rose-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold shadow-lg">NB</div>
-                            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-purple-600">
-                                NoBroker<span className="font-light text-gray-800">++</span>
+                            <span className="text-lg font-bold text-rose-600">
+                                NoBroker<span className="font-light text-slate-800">++</span>
                             </span>
                         </div>
 
