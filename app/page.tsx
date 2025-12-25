@@ -240,44 +240,59 @@ export default function Home() {
     return (
         <div className="h-screen bg-gray-50 flex flex-col font-sans overflow-hidden">
             {/* Navbar */}
-            <nav className="bg-white border-b px-6 py-4 flex items-center justify-between z-40 shadow-sm shrink-0">
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-rose-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold shadow-lg">NB</div>
-                    <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-purple-600">
-                        NoBroker<span className="font-light text-gray-800">++</span>
-                    </span>
-                </div>
+            <nav className="bg-white border-b z-40 shadow-sm shrink-0">
+                <div className="px-4 md:px-6 py-3 md:py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 bg-gradient-to-br from-rose-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold shadow-lg">NB</div>
+                            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-purple-600">
+                                NoBroker<span className="font-light text-gray-800">++</span>
+                            </span>
+                        </div>
 
-                {/* Cluster Selection */}
-                <div className="flex bg-gray-100 p-1 rounded-lg">
-                    {METRO_CLUSTERS.map(cluster => (
-                        <button
-                            key={cluster.id}
-                            onClick={() => setSelectedCluster(cluster)}
-                            className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-all flex items-center gap-2 ${selectedCluster.id === cluster.id
-                                ? 'bg-white text-gray-900 shadow-sm ring-1 ring-gray-200'
-                                : 'text-gray-500 hover:text-gray-900'
-                                }`}
+                        {/* Mobile Wishlist Link */}
+                        <Link
+                            href="/wishlist"
+                            className="md:hidden flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 text-rose-600 rounded-xl font-bold transition-all border border-rose-100"
                         >
-                            <div className={`w-2 h-2 rounded-full ${cluster.color}`} />
-                            {cluster.name}
-                        </button>
-                    ))}
-                </div>
+                            <Heart className={`w-4 h-4 ${wishlist.length > 0 ? 'fill-current' : ''}`} />
+                            <span className="text-xs uppercase tracking-tight">{wishlist.length}</span>
+                        </Link>
+                    </div>
 
-                {/* Wishlist Link */}
-                <Link
-                    href="/wishlist"
-                    className="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 rounded-lg font-semibold hover:bg-rose-100 transition-colors relative"
-                >
-                    <Heart className={`w-5 h-5 ${wishlist.length > 0 ? 'fill-current' : ''}`} />
-                    <span className="hidden md:inline">Wishlist</span>
-                    {wishlist.length > 0 && (
-                        <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
-                            {wishlist.length}
-                        </span>
-                    )}
-                </Link>
+                    {/* Cluster Selection - Scrollable on mobile */}
+                    <div className="flex bg-slate-100 p-1 rounded-xl overflow-x-auto no-scrollbar">
+                        <div className="flex gap-1 min-w-max">
+                            {METRO_CLUSTERS.map(cluster => (
+                                <button
+                                    key={cluster.id}
+                                    onClick={() => setSelectedCluster(cluster)}
+                                    className={`px-4 py-2 text-xs font-black uppercase tracking-widest rounded-lg transition-all flex items-center gap-2 ${selectedCluster.id === cluster.id
+                                        ? 'bg-white text-slate-900 shadow-sm ring-1 ring-slate-200'
+                                        : 'text-slate-500 hover:text-slate-900'
+                                        }`}
+                                >
+                                    <div className={`w-2 h-2 rounded-full ${cluster.color}`} />
+                                    {cluster.name}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Desktop Wishlist Link */}
+                    <Link
+                        href="/wishlist"
+                        className="hidden md:flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 rounded-lg font-semibold hover:bg-rose-100 transition-colors relative"
+                    >
+                        <Heart className={`w-5 h-5 ${wishlist.length > 0 ? 'fill-current' : ''}`} />
+                        <span>Wishlist</span>
+                        {wishlist.length > 0 && (
+                            <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                                {wishlist.length}
+                            </span>
+                        )}
+                    </Link>
+                </div>
             </nav>
 
             {/* Filters */}
@@ -286,21 +301,21 @@ export default function Home() {
             </div>
 
             {/* Station Drill-down */}
-            <div className="bg-white border-b px-4 py-3 overflow-x-auto shrink-0">
-                <div className="flex flex-col md:flex-row md:items-center gap-4 max-w-7xl mx-auto">
+            <div className="bg-white border-b px-4 py-3 overflow-x-auto shrink-0 no-scrollbar">
+                <div className="flex items-center gap-4 max-w-7xl mx-auto min-w-max">
                     <div className="flex items-center gap-2 shrink-0">
-                        <MapPinned className="w-4 h-4 text-gray-400" />
-                        <span className="text-xs font-semibold text-gray-500 uppercase">Stations:</span>
+                        <MapPinned className="w-4 h-4 text-slate-400" />
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Stations:</span>
                     </div>
 
-                    <div className="flex flex-1 gap-2 flex-wrap min-w-0">
+                    <div className="flex gap-2 min-w-0">
                         {selectedCluster.locations.map(loc => (
                             <button
                                 key={loc.placeName}
                                 onClick={() => toggleStation(loc.placeName)}
-                                className={`px-3 py-1 text-xs font-medium rounded-full transition-all border whitespace-nowrap ${selectedStations.includes(loc.placeName)
-                                    ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
-                                    : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'
+                                className={`px-4 py-2 text-[11px] font-black uppercase tracking-tighter rounded-full transition-all border shrink-0 ${selectedStations.includes(loc.placeName)
+                                    ? 'bg-slate-900 text-white border-slate-900 shadow-lg shadow-slate-100 scale-105'
+                                    : 'bg-white text-slate-600 border-slate-100 hover:border-slate-300'
                                     }`}
                             >
                                 {loc.placeName}
